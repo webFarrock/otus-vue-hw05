@@ -1,18 +1,24 @@
 <script lang="ts" setup>
 import {onBeforeMount, ref, computed, watch} from "vue"
-import {fetchPosts, fetchComments, fetchUsersByIds} from "@/api/JsonPlaceholder"
+import {fetchPosts, fetchComments, fetchUsersByIds, addPost, deletePost} from "@/api/JsonPlaceholder"
 import type {Ref} from "vue"
 import type {IPost, IUser, IComment} from "@/api/typing"
 import PostItem from '@/components/PostItem.vue'
 import PostList from '@/components/PostList.vue'
 import PostsFilter from '@/components/PostsFilter.vue'
+import PostAdd from '@/components/PostAdd.vue'
 
-interface FilterPayload {
+interface IFilterPayload {
   postTitle: string;
   userName: string;
 }
 
-const filter: Ref<FilterPayload | null> = ref(null)
+interface IAddPostPayload {
+  title: string;
+  body: string;
+}
+
+const filter: Ref<IFilterPayload | null> = ref(null)
 const posts: Ref<IPost[]> = ref([])
 const users: Ref<IUser[]> = ref([])
 const postUser: Ref<IUser | null> = ref(null)
@@ -50,8 +56,18 @@ const initApp = async () => {
   users.value = await fetchUsersByIds(userIds)
 }
 const handleSelectPost = (id: number) => selectedPost.value = posts.value.find(item => item.id === id) || null
-const handleFilter = (filterPayload: { postTitle: string, userName: string }) => filter.value = filterPayload
-
+const handleFilter = (IFilterPayload: { postTitle: string, userName: string }) => filter.value = IFilterPayload
+const handleDelete = async (id: number) => {
+  // api предоставляет только фейковое удаление - поэтому фильтруем то что уже получено
+  const result = await deletePost(id)
+  selectedPost.value = null
+  posts.value = posts.value.filter(item => item.id !== id)
+}
+const handleAddPost = async (payload: IAddPostPayload) => {
+  // в api фейковое добавление, поэтому добавленный посто складываем в существующий массив
+  const result = await addPost({userId: 1, ...payload})
+  posts.value = [result, ...posts.value]
+}
 onBeforeMount(() => initApp())
 
 watch(selectedPost, async (v) => {
@@ -77,8 +93,14 @@ watch(selectedPost, async (v) => {
     <div v-if="!showPosts">posts not found</div>
     <main role="main" class="w-full h-full flex-grow p-3 overflow-auto">
       <h3 class="text-3xl font-bold mb-8">Post item</h3>
-      <PostItem v-if="showPost" :post="selectedPost" :user="postUser" :comments="postComments"></PostItem>
-      <div v-else>Choose post item</div>
+      <PostItem v-if="showPost"
+                :post="selectedPost"
+                :user="postUser"
+                :comments="postComments"
+                @delete="handleDelete"
+      ></PostItem>
+      <div v-else>Choose or create post item</div>
+      <PostAdd @add-post="handleAddPost"/>
     </main>
   </div>
 </template>

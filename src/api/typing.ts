@@ -6,6 +6,21 @@ export interface IPost {
   selected?: boolean;
 }
 
+export interface IAddPost {
+  title: string;
+  body: string;
+  userId: 1; // намеренно указан конкретный пользователь
+}
+
+export interface IAddPostResponse {
+  data: {
+    title: string;
+    body: string;
+    userId: 1; // намеренно указан конкретный пользователь
+  }
+  id: number;
+}
+
 export interface IComment {
   postId: number;
   id: number;
