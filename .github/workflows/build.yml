@@ -1,6 +1,8 @@
 name: Deploy to GithubPages
 
 on:
+  push:
+    master
   pull_request:
     branches:
       - master
