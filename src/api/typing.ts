@@ -6,8 +6,6 @@ export interface IPost {
   selected?: boolean;
 }
 
-export interface IPostFilter extends Partial<IPost> {}
-
 export interface IComment {
   postId: number;
   id: number;

@@ -1,5 +1,5 @@
 import axios, {Axios} from "axios"
-import type {IPost, IPostFilter, IUser, IComment} from "@/api/typing"
+import type {IPost, IUser, IComment} from "@/api/typing"
 
 class JsonPlaceholder {
     private readonly baseUrl = 'https://jsonplaceholder.typicode.com'
@@ -11,9 +11,8 @@ class JsonPlaceholder {
         })
     }
 
-    async fetchPosts(filter: IPostFilter = {}) {
-        const params = { ...filter }
-        const { data } = await this.request.get<IPost[]>('/posts', { params })
+    async fetchPosts() {
+        const { data } = await this.request.get<IPost[]>('/posts')
         return data || []
     }
 
@@ -22,13 +21,13 @@ class JsonPlaceholder {
         return data || []
     }
 
-    async fetchUsersById(id: number) {
+    async fetchUsersByIds(id: number[]) {
         const params = { id }
         const { data } = await this.request.get<IUser[]>(`/users`, { params })
-        return data[0] || null
+        return data || null
     }
 }
 
-export const fetchPosts = (filter: IPostFilter = {}) => new JsonPlaceholder().fetchPosts(filter)
+export const fetchPosts = () => new JsonPlaceholder().fetchPosts()
 export const fetchComments = (postId: number) => new JsonPlaceholder().fetchComments(postId)
-export const fetchUsersById = (id:number) => new JsonPlaceholder().fetchUsersById(id)
+export const fetchUsersByIds = (id:number[]) => new JsonPlaceholder().fetchUsersByIds(id)
