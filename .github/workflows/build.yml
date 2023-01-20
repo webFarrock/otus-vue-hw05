@@ -2,11 +2,11 @@ name: Deploy to GithubPages
 
 on:
   push:
-    master
+    branches:
+      - master
   pull_request:
     branches:
       - master
-      - develop
 
 jobs:
   deploy-to-gh-pages:
