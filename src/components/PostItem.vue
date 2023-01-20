@@ -5,7 +5,7 @@ import PostUser from '@/components/PostUser.vue'
 import PostComments from '@/components/PostComments.vue'
 
 interface Props {
-  post: IPost;
+  post: IPost | null;
   user: IUser | null;
   comments: IComment[];
 }
@@ -18,7 +18,7 @@ const comments = computed(() => props.comments)
 const showComments = computed(() => comments.value.length > 0)
 const handleClick = () => {
   if (confirm('Delete current post ?')) {
-    emit('delete', post.value.id)
+    emit('delete', post.value?.id)
   }
 }
 </script>
@@ -32,8 +32,8 @@ const handleClick = () => {
         Delete post
       </button>
     </div>
-    <h4 class="text-2xl font-bold mb-2">{{ post.title }}</h4>
-    <p>{{ post.body }}</p>
+    <h4 class="text-2xl font-bold mb-2">{{ post?.title }}</h4>
+    <p>{{ post?.body }}</p>
   </div>
   <PostUser v-if="showUser" :user="user" />
   <PostComments v-if="showComments" :comments="comments" />
