@@ -56,3 +56,13 @@ export interface IUser {
   website: string;
   company: IUserCompany;
 }
+
+export interface IFilterPayload {
+  postTitle: string;
+  userName: string;
+}
+
+export interface IAddPostPayload {
+  title: string;
+  body: string;
+}
